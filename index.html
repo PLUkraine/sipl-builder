@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      
+      <title>SIPL builder</title>
+
+      <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="styles.css">
+  	  <link rel="stylesheet" type="text/css" href="popup.css">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header navbar-brand">
+          SIPL Program Builder
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a id="expBtn">Export to JSON</a></li>
+            <li><a id="impBtn">Import from JSON</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+      <svg class="split split-horizontal tree-container bordered" id="tree-comp"></svg>
+    	<pre class="split split-horizontal program bordered" id="program-comp"></pre>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="libs/jquery-1.12.3.min.js"></script>
+    <script src="libs/d3.min.js"></script>
+  	<script src="TreeNode.js"></script>
+  	<script src="indexTree.js"></script>
+  	<script src="popup.js"></script>
+    <script src="libs/split.min.js"></script>
+    <script>
+        Split(['#tree-comp', '#program-comp'], {
+            sizes: [75, 25],
+            cursor: 'col-resize'
+        })
+    </script>
+
+	<div id="overlay" onclick="closeMenu()"> </div>
+	<div id="menu"> This is popup menu</div>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="jquery-1.12.0.min.js"></script>
+	<title></title>
+	<style type="text/css">
+		#overlay{
+		    width: 100%;
+		    height: 100%;
+		    display: none;
+		    position: fixed;
+		    z-index: 1;
+		    top: 0;
+		    left: 0;
+		    background: #000;
+		   	background: rgba(0,0,0,0.4);
+	  	}
+	  	#menu{
+	  		display: none;
+		    z-index: 2;
+		    position: fixed;
+		    left: 30%;
+		    top: 30%;
+		    width: auto;
+		    overflow: auto;
+		    padding: 10px 20px;
+		    background: #f3f3f3;
+		    border: 5px solid #999;
+		    border-radius: 10px;
+		    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	  	}
+		@import url(http://fonts.googleapis.com/css?family=Cabin:700);
+
+		/* HTML5 Boilerplate accessible hidden styles */
+		[type="radio"] {
+		  border: 0; 
+		  clip: rect(0 0 0 0); 
+		  height: 1px; margin: -1px; 
+		  overflow: hidden; 
+		  padding: 0; 
+		  position: absolute; 
+		  width: 1px;
+		}
+
+		/* One radio button per line */
+		label {
+		  display: block;
+		  cursor: pointer;
+		  line-height: 2;
+		  font-size: 1.5em;
+		}
+
+		[type="radio"] + span {
+		  display: block;
+		}
+
+		/* the basic, unchecked style */
+		[type="radio"] + span:before {
+		  content: '';
+		  display: inline-block;
+		  width: 1em;
+		  height: 1em;
+		  vertical-align: -0.25em;
+		  border-radius: 1em;
+		  border: 0.125em solid #fff;
+		  box-shadow: 0 0 0 0.15em #000;
+		  margin-right: 0.75em;
+		  transition: 0.5s ease all;
+		}
+
+		/* the checked style using the :checked pseudo class */
+		[type="radio"]:checked + span:before {
+		  background: green;
+		  box-shadow: 0 0 0 0.25em #000;
+		}
+
+		/* never forget focus styling */
+		[type="radio"]:focus + span:after {
+		  content: '\0020\2190';
+		  font-size: 1.5em;
+		  line-height: 1;
+		  vertical-align: -0.125em;
+		}
+
+	</style>
+</head>
+<body>
+	<button id="btnShow" onclick="showMenu()"> Click on me</button>
+
+	<div id="overlay" onclick="closeMenu()"> </div>
+
+	<div id="menu"> This is menu</div>
+
+	<script src="TreeNode.js"></script>
+
+
+	<script type="text/javascript">
+		var node = Node(NodeTypes.Expression);
+
+		// to represent '<' or '>' in HTML we need to use "&lt;" or "&gt;"
+		function changeAngleBrackets(str) {
+			var newStr = "";
+			for (var i = 0; i < str.length; ++i) {
+				if (str[i] == "<") newStr += "&lt;"; else
+				if (str[i] == ">") newStr += "&gt;"; else
+					newStr += str[i];
+			}
+			return newStr;
+		}
+
+		// generate string that represent derivation
+		function derivationToPopUpFormat(der) {
+			var str = "";
+			for (var i = 0; i < der.length; ++i)
+				str += " " + nodeToPopUpFormat(der[i]);
+			return str; 
+		}
+		function nodeToPopUpFormat(der) {
+			var result = "";
+			if (der.type == NodeTypes.Number || der.type == NodeTypes.Variable) {
+				result += '<input type = "text" name = "text" id="' +der.type+ '"  placeholder="' + der.value() + '">';
+			}
+			else
+				result += changeAngleBrackets(der.value());
+			return result;
+		}
+		//generate HTML which show list of all possible derivations for choosen node
+		function popUpDerivations(_node) {
+			var derivations = getDerivations(_node.type);
+			var text = '<form id="chooseDerivation" class="radio">';
+			for (var i = 0; i < derivations.length; ++i) {
+				var id = i.toString();
+				text += '<label for="radio'+id+'"">';
+				text += '<input type="radio" id="radio' + (i).toString() + '" name="derivation" value="'+(i).toString()+'" class="radio">';
+				text += '<span>';
+				text +=  derivationToPopUpFormat(derivations[i]);
+				text += '</span>';
+				text += "</label>";
+			}
+			text += '<input type="submit" value="Submit" onclick="submitInput()">';
+			text +="</form>";
+			return text;
+		}
+
+		// get index checked derivation from list of radio buttons
+		function submitInput() {	
+			// get index of checked redio button
+			var index = parseInt(document.querySelector('input[name="derivation"]:checked').value);
+
+			var chosenDerivation = getDerivations(node.type)[index];
+			try {
+				if (chosenDerivation[0].type == NodeTypes.Number || chosenDerivation[0].type == NodeTypes.Variable) {
+					var value = document.getElementById(chosenDerivation[0].type).value;
+					chosenDerivation[0].setValue(value);
+					alert(value);
+				}
+			}
+			catch(error) {
+				alert(error);
+				return;
+			}
+			if (node.canExpand(index)) {
+				node.children = chosenDerivation;
+			}
+
+			// Redraw : TODO
+
+			
+		}
+		
+		function showMenu() {
+			document.getElementById("overlay").style.display = "block";
+			document.getElementById("menu").style.display = "block";
+			document.getElementById("menu").innerHTML = popUpDerivations(node);
+		}
+		function closeMenu() {
+			document.getElementById("overlay").style.display = "none";
+			document.getElementById("menu").style.display = "none";
+		}
+	</script>
+</body>
+</html>
