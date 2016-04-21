@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Layout test</title>
+	<style>
+	html, body {
+	    height: 100%;
+	}
+
+	body {
+	    padding: 2px;
+	    background-color: #F6F6F6;
+	    box-sizing: border-box;
+	}
+
+	.split {
+	    -webkit-box-sizing: border-box;
+	       -moz-box-sizing: border-box;
+	            box-sizing: border-box;
+
+	    overflow-y: auto;
+	    overflow-x: hidden;
+  	}
+
+  	.bordered {
+  		border: 1px solid #C0C0C0;
+    	box-shadow: inset 0 1px 2px #e4e4e4;
+    	background-color: #fff;
+  	}
+
+  	.gutter.gutter-horizontal {
+    	cursor: col-resize;
+    }
+
+  	.split.split-horizontal, .gutter.gutter-horizontal {
+    	height: 100%;
+    	float: left;
+  	}
+
+	</style>
+</head>
+<body>
+	<div class="split split-horizontal bordered" id="a"></div>
+	<svg class="split split-horizontal bordered" id="b"></svg>
+	<script src="libs/Split.min.js"></script>
+	<script>
+		Split(['#a','#b'], {
+      		sizes: [25, 75],
+      		cursor: 'col-resize'
+		});
+	</script>
+</body>
+</html>
